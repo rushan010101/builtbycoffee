@@ -268,6 +268,7 @@
     }
 
 
+
     .ticker-wrap {
       overflow: hidden;
       border-top: 1px solid var(--border);
@@ -1274,7 +1275,8 @@
     const canvas = document.getElementById('bg-canvas');
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    const _ih = window.innerHeight;
+    renderer.setSize(window.innerWidth, _ih);
     renderer.setClearColor(0x141E26, 1);
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -1531,10 +1533,14 @@
     updateScene();
     animate();
 
+    // Lock initial height to prevent mobile browser toolbar showing/hiding causing zoom
+    const initialHeight = window.innerHeight;
     window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
+      const w = window.innerWidth;
+      const h = window.innerHeight > initialHeight * 1.1 ? window.innerHeight : initialHeight;
+      camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(w, h);
     });
 
     document.getElementById('themeIcon').textContent = isDark ? '☀' : '☽';
