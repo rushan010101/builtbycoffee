@@ -1325,16 +1325,37 @@
     scene.add(sg);
 
     // ── GLOW BLOBS ───────────────────────────────────────
-    const glowMat1 = new THREE.MeshBasicMaterial({ color: 0xC4956A, transparent: true, opacity: .045, side: THREE.DoubleSide });
-    const glowMat2 = new THREE.MeshBasicMaterial({ color: 0xC4956A, transparent: true, opacity: .028, side: THREE.DoubleSide });
-    const glow1 = new THREE.Mesh(new THREE.CircleGeometry(14, 32), glowMat1);
-    const glow2 = new THREE.Mesh(new THREE.CircleGeometry(10, 32), glowMat2);
-    glow1.position.set(10, -4, -18); glow2.position.set(-8, 6, -14);
-    scene.add(glow1); scene.add(glow2);
+    const glowBlobs = [];
+    const blobDefs = [
+      { r: 14, x: 10, y: -4, z: -18 },
+      { r: 10, x: -8, y: 6, z: -14 },
+    ];
+    blobDefs.forEach((d, i) => {
+      const mat = new THREE.MeshBasicMaterial({ color: 0xC4956A, transparent: true, opacity: 0, side: THREE.DoubleSide });
+      const mesh = new THREE.Mesh(new THREE.CircleGeometry(d.r, 32), mat);
+      mesh.position.set(d.x, d.y, d.z);
+      scene.add(mesh);
+      glowBlobs.push({
+        mesh, mat,
+        opacity: 0.2 + Math.random() * 0.2,
+        opacityDir: 1,
+        opacitySpeed: 0.0004 + Math.random() * 0.0003,
+        opacityPause: Math.random() * 100 | 0,
+        // spawn positions pool — teleport to a new spot when invisible
+        positions: [
+          new THREE.Vector3(10, -4, -18), new THREE.Vector3(-8, 6, -14),
+          new THREE.Vector3(6, 8, -16), new THREE.Vector3(-10, -6, -15),
+          new THREE.Vector3(0, 5, -20), new THREE.Vector3(8, -8, -12),
+        ],
+        posIdx: i
+      });
+    });
+    const glowMat1 = glowBlobs[0].mat;
+    const glowMat2 = glowBlobs[1].mat;
 
     // ── COFFEE BEANS ─────────────────────────────────────
     const beans = [];
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 16; i++) {
       const group = new THREE.Group();
       const bodyMat = new THREE.MeshBasicMaterial({ color: 0xB87040, transparent: true, opacity: 0.85 });
       const body = new THREE.Mesh(new THREE.SphereGeometry(0.38, 12, 8), bodyMat);
@@ -1393,8 +1414,7 @@
       rings.forEach(r => r.mesh.material.color.copy(rc));
       pMat.color.copy(rc);
       sg.children.forEach(t => t.material.color.copy(rc));
-      glowMat1.color.copy(rc); glowMat2.color.copy(rc);
-      glowMat1.opacity = dark ? .045 : .025; glowMat2.opacity = dark ? .028 : .015;
+      glowBlobs.forEach(b => b.mat.color.copy(rc));
       const bBodyCol = new THREE.Color(dark ? 0xB87040 : 0x7A3E18);
       const bGlowCol = new THREE.Color(dark ? 0xC4956A : 0x9B5A28);
       beans.forEach(g => { g.children[0].material.color.copy(bBodyCol); g.children[1].material.color.copy(bGlowCol); });
@@ -1404,7 +1424,7 @@
     // ── MOUSE / SCROLL ───────────────────────────────────
     let tX = 0, tY = 0, cX = 0, cY = 0, scrollY = 0;
     document.addEventListener('mousemove', e => { tX = (e.clientX / window.innerWidth - .5) * 5; tY = -(e.clientY / window.innerHeight - .5) * 3; });
-    window.addEventListener('scroll', () => { scrollY = window.scrollY; });
+    // scroll removed — causes zoom on mobile
 
     // ── ANIMATE ──────────────────────────────────────────
     const clock = new THREE.Clock();
@@ -1481,9 +1501,29 @@
         tube.position.y = Math.sin(t * tube.userData.spd * 600 + tube.userData.off) * .3;
       });
 
-      glow1.rotation.z = t * .03; glow2.rotation.z = -t * .02;
-      glowMat1.opacity = (isDark ? .045 : .025) + Math.sin(t * .4) * .015;
-      glowMat2.opacity = (isDark ? .028 : .015) + Math.sin(t * .5 + 1) * .01;
+      glowBlobs.forEach((b, i) => {
+        const maxOp = isDark ? (i === 0 ? .045 : .028) : (i === 0 ? .025 : .015);
+        if (b.opacityPause > 0) {
+          b.opacityPause--;
+        } else {
+          b.opacity += b.opacityDir * b.opacitySpeed;
+          if (b.opacity >= maxOp) {
+            b.opacity = maxOp;
+            b.opacityDir = -1;
+            b.opacityPause = 180 + Math.random() * 300 | 0;
+          } else if (b.opacity <= 0) {
+            b.opacity = 0;
+            // Teleport to a new random position while invisible
+            b.posIdx = (b.posIdx + 1 + Math.floor(Math.random() * (b.positions.length - 1))) % b.positions.length;
+            const np = b.positions[b.posIdx];
+            b.mesh.position.set(np.x, np.y, np.z);
+            b.opacityDir = 1;
+            b.opacityPause = 80 + Math.random() * 200 | 0;
+          }
+        }
+        b.mat.opacity = b.opacity;
+        b.mesh.rotation.z = t * (i === 0 ? .03 : -.02);
+      });
 
       renderer.render(scene, camera);
     }
