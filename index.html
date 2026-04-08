@@ -944,13 +944,30 @@
     }
 
     @media(max-width:768px) {
+
+      .cursor,
+      .cursor-ring {
+        display: none
+      }
+
+      body {
+        cursor: auto
+      }
+
       .hero-content {
         grid-template-columns: 1fr;
         gap: 40px
       }
 
       .hero-photo-wrap {
-        display: none
+        display: flex;
+        justify-content: center;
+        margin-bottom: 32px
+      }
+
+      .hero-photo {
+        width: 120px;
+        height: 156px
       }
 
       .projects-grid {
@@ -985,11 +1002,9 @@
 </head>
 
 <body>
-
   <canvas id="bg-canvas"></canvas>
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
-
   <div class="content">
     <nav>
       <div class="container">
@@ -1059,15 +1074,6 @@
               <circle cx="120" cy="120" r="110" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.2" />
               <circle cx="120" cy="120" r="100" fill="none" stroke="var(--accent)" stroke-width="0.5" opacity="0.1" />
             </svg>
-            <!-- <div class="hero-photo">
-              <div class="hero-photo-placeholder">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-                </svg>
-                <span>Your photo</span>
-              </div>
-            </div> -->
             <div class="hero-photo">
               <img src="/photo1.jpg" alt="Rushan Engalychev"
                 style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" />
@@ -1075,177 +1081,173 @@
           </div>
         </div>
       </div>
-  </div>
-  </section>
+    </section>
 
-  <div class="ticker-wrap">
-    <div class="ticker-track">
-      <div class="ticker-item">
-        <span>Full-Stack Developer</span><span class="t-dot">·</span>
-        <span>Stuttgart, DE</span><span class="t-dot">·</span>
-        <span>SaaS</span><span class="t-dot">·</span>
-        <span>Web3</span><span class="t-dot">·</span>
-        <span>Game Dev</span><span class="t-dot">·</span>
-        <span>Filming</span><span class="t-dot">·</span>
-        <span>AI Enthusiast</span><span class="t-dot">·</span>
-        <span>Building in Public</span><span class="t-dot">·</span>
-      </div>
-      <div class="ticker-item" aria-hidden="true">
-        <span>Full-Stack Developer</span><span class="t-dot">·</span>
-        <span>Stuttgart, DE</span><span class="t-dot">·</span>
-        <span>SaaS</span><span class="t-dot">·</span>
-        <span>Web3</span><span class="t-dot">·</span>
-        <span>Game Dev</span><span class="t-dot">·</span>
-        <span>Filming</span><span class="t-dot">·</span>
-        <span>AI Enthusiast</span><span class="t-dot">·</span>
-        <span>Building in Public</span><span class="t-dot">·</span>
+    <div class="ticker-wrap">
+      <div class="ticker-track">
+        <div class="ticker-item">
+          <span>Full-Stack Developer</span><span class="t-dot">·</span>
+          <span>Stuttgart, DE</span><span class="t-dot">·</span>
+          <span>SaaS</span><span class="t-dot">·</span>
+          <span>Web3</span><span class="t-dot">·</span>
+          <span>Game Dev</span><span class="t-dot">·</span>
+          <span>Filming</span><span class="t-dot">·</span>
+          <span>AI Enthusiast</span><span class="t-dot">·</span>
+          <span>Building in Public</span><span class="t-dot">·</span>
+        </div>
+        <div class="ticker-item" aria-hidden="true">
+          <span>Full-Stack Developer</span><span class="t-dot">·</span>
+          <span>Stuttgart, DE</span><span class="t-dot">·</span>
+          <span>SaaS</span><span class="t-dot">·</span>
+          <span>Web3</span><span class="t-dot">·</span>
+          <span>Game Dev</span><span class="t-dot">·</span>
+          <span>Filming</span><span class="t-dot">·</span>
+          <span>AI Enthusiast</span><span class="t-dot">·</span>
+          <span>Building in Public</span><span class="t-dot">·</span>
+        </div>
       </div>
     </div>
-  </div>
 
-  <section id="projects">
-    <div class="container">
-      <div class="section-label">Projects</div>
-      <div class="projects-grid">
-        <a href="https://regelradar.de" target="_blank" rel="noopener" class="project-card featured" id="proj0">
-          <div class="project-card-top">
-            <div class="project-icon"><span class="material-icons-outlined">radar</span></div>
-            <span class="project-status live">Live</span>
-          </div>
-          <div class="project-name">RegelRadar</div>
-          <div class="project-desc">Automatic compliance monitoring for German freelancers and small businesses.
-            Monitors official German and EU regulatory sources daily and sends personalised alerts — tailored to your
-            industry and business type.</div>
-          <div class="project-footer">
-            <div class="project-tech">
-              <span>Node.js</span><span>React</span><span>PostgreSQL</span><span>OpenAI</span><span>Stripe</span>
+    <section id="projects">
+      <div class="container">
+        <div class="section-label">Projects</div>
+        <div class="projects-grid">
+          <a href="https://regelradar.de" target="_blank" rel="noopener" class="project-card featured" id="proj0">
+            <div class="project-card-top">
+              <div class="project-icon"><span class="material-icons-outlined">radar</span></div>
+              <span class="project-status live">Live</span>
             </div>
-            <span class="project-arrow">→</span>
+            <div class="project-name">RegelRadar</div>
+            <div class="project-desc">Automatic compliance monitoring for German freelancers and small businesses.
+              Monitors official German and EU regulatory sources daily and sends personalised alerts — tailored to your
+              industry and business type.</div>
+            <div class="project-footer">
+              <div class="project-tech">
+                <span>Node.js</span><span>React</span><span>PostgreSQL</span><span>OpenAI</span><span>Stripe</span>
+              </div>
+              <span class="project-arrow">→</span>
+            </div>
+          </a>
+          <div class="project-card" id="proj1">
+            <div class="project-card-top">
+              <div class="project-icon"><span class="material-icons-outlined">grid_view</span></div>
+              <span class="project-status soon">Coming soon</span>
+            </div>
+            <div class="project-name">Untitled Project</div>
+            <div class="project-desc">A web3 / NFT project. More details coming soon.</div>
+            <div class="project-footer">
+              <div class="project-tech"><span>Web3</span><span>NFT</span><span>SvelteKit</span></div>
+            </div>
           </div>
-        </a>
-        <div class="project-card" id="proj1">
-          <div class="project-card-top">
-            <div class="project-icon"><span class="material-icons-outlined">grid_view</span></div>
-            <span class="project-status soon">Coming soon</span>
+          <div class="project-card" id="proj2">
+            <div class="project-card-top">
+              <div class="project-icon"><span class="material-icons-outlined">sports_esports</span></div>
+              <span class="project-status soon">In development</span>
+            </div>
+            <div class="project-name">Untitled Game</div>
+            <div class="project-desc">A mobile game. Details coming soon — the name is too good to reveal just yet.
+            </div>
+            <div class="project-footer">
+              <div class="project-tech"><span>Mobile</span><span>Game dev</span><span>Godot Engine</span></div>
+            </div>
           </div>
-          <div class="project-name">Untitled Project</div>
-          <div class="project-desc">A web3 / NFT project. More details coming soon.</div>
-          <div class="project-footer">
-            <div class="project-tech"><span>Web3</span><span>NFT</span><span>SvelteKit</span></div>
-          </div>
-        </div>
-        <div class="project-card" id="proj2">
-          <div class="project-card-top">
-            <div class="project-icon"><span class="material-icons-outlined">sports_esports</span></div>
-            <span class="project-status soon">In development</span>
-          </div>
-          <div class="project-name">Untitled Game</div>
-          <div class="project-desc">A mobile game. Details coming soon — the name is too good to reveal just yet.
-          </div>
-          <div class="project-footer">
-            <div class="project-tech"><span>Mobile</span><span>Game dev</span><span>Godot Engine</span></div>
-          </div>
-        </div>
-        <div class="project-card" id="proj3">
-          <div class="project-card-top">
-            <div class="project-icon"><span class="material-icons-outlined">videocam</span></div>
-            <span class="project-status soon">In development</span>
-          </div>
-          <div class="project-name">The Walk</div>
-          <div class="project-desc">A video project. Something is forming — more soon.</div>
-          <div class="project-footer">
-            <div class="project-tech"><span>YouTube</span><span>Filming</span></div>
+          <div class="project-card" id="proj3">
+            <div class="project-card-top">
+              <div class="project-icon"><span class="material-icons-outlined">videocam</span></div>
+              <span class="project-status soon">In development</span>
+            </div>
+            <div class="project-name">The Walk</div>
+            <div class="project-desc">A video project. Something is forming — more soon.</div>
+            <div class="project-footer">
+              <div class="project-tech"><span>YouTube</span><span>Filming</span></div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <div class="hr-line"></div>
+    <div class="hr-line"></div>
 
-  <section id="about">
-    <div class="container">
-      <div class="section-label">About</div>
-      <div class="about-grid">
-        <div class="about-text" id="aboutText">
-          <p>Developer, founder, and <strong>builder</strong> based in Stuttgart. I make things I'm genuinely curious
-            about.</p>
-          <p><strong>Built by Coffee</strong> is my one-man studio. SaaS, web3, games — whatever the idea demands. I
-            do it all: design, code, ship, repeat.</p>
-          <p><span class="material-icons-outlined"
-              style="font-size:14px;vertical-align:middle;color:var(--accent);margin-right:4px">favorite</span>I spent
-            6 years living in <strong>Shenzhen and Hong Kong</strong> — an experience that rewired how I see the
-            world. New cultures don't just broaden your perspective, they break it apart and rebuild it better.</p>
-          <p>Passionate about <strong>filming</strong> and a good challenge — both are converging into another project
-            I'll be throwing myself into very soon.</p>
-          <p>I'm always open to <strong>collaborations</strong> — whether it's building something together, a wild
-            idea, or just a good conversation. <a href="mailto:contact@builtbycoffee.com">Drop me a line.</a></p>
+    <section id="about">
+      <div class="container">
+        <div class="section-label">About</div>
+        <div class="about-grid">
+          <div class="about-text" id="aboutText">
+            <p>Developer, founder, and <strong>builder</strong> based in Stuttgart. I make things I'm genuinely curious
+              about.</p>
+            <p><strong>Built by Coffee</strong> is my one-man studio. SaaS, web3, games — whatever the idea demands. I
+              do it all: design, code, ship, repeat.</p>
+            <p><span class="material-icons-outlined"
+                style="font-size:14px;vertical-align:middle;color:var(--accent);margin-right:4px">favorite</span>I spent
+              6 years living in <strong>Shenzhen and Hong Kong</strong> — an experience that rewired how I see the
+              world. New cultures don't just broaden your perspective, they break it apart and rebuild it better.</p>
+            <p>Passionate about <strong>filming</strong> and a good challenge — both are converging into another project
+              I'll be throwing myself into very soon.</p>
+            <p>I'm always open to <strong>collaborations</strong> — whether it's building something together, a wild
+              idea, or just a good conversation. <a href="mailto:contact@builtbycoffee.com">Drop me a line.</a></p>
+          </div>
+          <div class="about-details" id="aboutDetails">
+            <div class="about-detail"><span class="about-detail-label">Location</span><span
+                class="about-detail-value">Stuttgart, Baden-Württemberg, DE</span></div>
+            <div class="about-detail"><span class="about-detail-label">Studio</span><span
+                class="about-detail-value">Built by Coffee</span></div>
+            <div class="about-detail"><span class="about-detail-label">Experience</span><span
+                class="about-detail-value">Frontend Developer · 8+ years</span></div>
+            <div class="about-detail"><span class="about-detail-label">Focus</span><span class="about-detail-value">SaaS
+                · Marketplaces · Games</span></div>
+            <div class="about-detail"><span class="about-detail-label">Previously</span><span
+                class="about-detail-value">Shenzhen & Hong Kong · 6 years</span></div>
+            <div class="about-detail"><span class="about-detail-label">Status</span><span
+                class="about-detail-value">Building in public ☕</span></div>
+          </div>
         </div>
-        <div class="about-details" id="aboutDetails">
-          <div class="about-detail"><span class="about-detail-label">Location</span><span
-              class="about-detail-value">Stuttgart, Baden-Württemberg, DE</span></div>
-          <div class="about-detail"><span class="about-detail-label">Studio</span><span class="about-detail-value">Built
-              by Coffee</span></div>
-          <div class="about-detail"><span class="about-detail-label">Experience</span><span
-              class="about-detail-value">Frontend Developer · 8+ years</span></div>
-          <div class="about-detail"><span class="about-detail-label">Focus</span><span class="about-detail-value">SaaS
-              · Marketplaces · Games</span></div>
-          <div class="about-detail"><span class="about-detail-label">Previously</span><span
-              class="about-detail-value">Shenzhen & Hong Kong · 6 years</span></div>
-          <div class="about-detail"><span class="about-detail-label">Status</span><span
-              class="about-detail-value">Building in public ☕</span></div>
+        <div class="about-stats" id="aboutStats">
+          <div class="about-stat">
+            <div class="about-stat-num">3+</div>
+            <div class="about-stat-label">Products shipped</div>
+          </div>
+          <div class="about-stat">
+            <div class="about-stat-num">∞</div>
+            <div class="about-stat-label">Ideas per day</div>
+          </div>
+          <div class="about-stat">
+            <div class="about-stat-num">1</div>
+            <div class="about-stat-label">Studio, solo</div>
+          </div>
         </div>
       </div>
-      <div class="about-stats" id="aboutStats">
-        <div class="about-stat">
-          <div class="about-stat-num">3+</div>
-          <div class="about-stat-label">Products shipped</div>
-        </div>
-        <div class="about-stat">
-          <div class="about-stat-num">∞</div>
-          <div class="about-stat-label">Ideas per day</div>
-        </div>
-        <div class="about-stat">
-          <div class="about-stat-num">1</div>
-          <div class="about-stat-label">Studio, solo</div>
+    </section>
+
+    <div class="hr-line"></div>
+
+    <section id="contact">
+      <div class="container">
+        <div class="section-label">Contact</div>
+        <div class="contact-inner" id="contactInner">
+          <div class="contact-text">
+            <h2>Let's build something.</h2>
+            <p>Questions, collaborations, or just want to say hi.</p>
+          </div>
+          <a href="mailto:contact@builtbycoffee.com" class="contact-link">contact@builtbycoffee.com →</a>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <div class="hr-line"></div>
-
-  <section id="contact">
-    <div class="container">
-      <div class="section-label">Contact</div>
-      <div class="contact-inner" id="contactInner">
-        <div class="contact-text">
-          <h2>Let's build something.</h2>
-          <p>Questions, collaborations, or just want to say hi.</p>
-        </div>
-        <a href="mailto:contact@builtbycoffee.com" class="contact-link">contact@builtbycoffee.com →</a>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="container">
-      <div class="footer-inner">
-        <span class="footer-copy">© 2026 Built by Coffee · Rushan Engalychev</span>
-        <div class="footer-links">
-          <a href="https://www.linkedin.com/in/rushan-engalychev" class="footer-link">LinkedIn</a>
+    <footer>
+      <div class="container">
+        <div class="footer-inner">
+          <span class="footer-copy">© 2026 Built by Coffee · Rushan Engalychev</span>
+          <div class="footer-links">
+            <a href="https://www.linkedin.com/in/rushan-engalychev" class="footer-link">LinkedIn</a>
+          </div>
         </div>
       </div>
-    </div>
-  </footer>
+    </footer>
   </div>
 
   <script>
     // ── THEME ────────────────────────────────────────────
-    // Reading — replace your isDark line
-    let isDark = localStorage.getItem('theme')
-      ? localStorage.getItem('theme') === 'dark'
-      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    let isDark = localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
 
     window.toggleTheme = function () {
       isDark = !isDark;
@@ -1260,10 +1262,7 @@
     const cursor = document.getElementById('cursor');
     const cursorRing = document.getElementById('cursorRing');
     let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
-    document.addEventListener('mousemove', e => {
-      mouseX = e.clientX; mouseY = e.clientY;
-      cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px';
-    });
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px'; });
     (function loop() { ringX += (mouseX - ringX) * .12; ringY += (mouseY - ringY) * .12; cursorRing.style.left = ringX + 'px'; cursorRing.style.top = ringY + 'px'; requestAnimationFrame(loop); })();
     document.querySelectorAll('a,button,.hero-tag,.about-detail,.project-card').forEach(el => {
       el.addEventListener('mouseenter', () => { cursor.classList.add('hovering'); cursorRing.classList.add('hovering'); });
@@ -1276,26 +1275,28 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x141E26, 1);
-
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 28);
 
     // ── RINGS ────────────────────────────────────────────
     const RING_DATA = [
-      { r: 7, tube: .06, x: 4, y: 2, z: -5, rx: .3, ry: .1, spd: .0008, dr: .0003, t: 0 },
-      { r: 5, tube: .05, x: -6, y: -1, z: -8, rx: .6, ry: .4, spd: .0012, dr: .0005, t: 1.1 },
-      { r: 9, tube: .04, x: 2, y: -4, z: -12, rx: .9, ry: .2, spd: .0006, dr: .0002, t: 2.3 },
-      { r: 4, tube: .06, x: -3, y: 5, z: -6, rx: .2, ry: .7, spd: .001, dr: .0004, t: .7 },
-      { r: 12, tube: .03, x: 0, y: 0, z: -16, rx: 1.2, ry: .5, spd: .0004, dr: .0001, t: 3.1 },
-      { r: 3, tube: .07, x: 8, y: -3, z: -4, rx: .4, ry: .9, spd: .0015, dr: .0006, t: 1.8 },
-      { r: 6, tube: .04, x: -8, y: 3, z: -10, rx: .7, ry: .3, spd: .0009, dr: .0003, t: .4 },
+      { r: 7, tube: .06, x: 4, y: 2, z: -5, rx: .3, ry: .1, rz: 0.2, spd: .0008, dr: .0003, t: 0 },
+      { r: 5, tube: .05, x: -6, y: -1, z: -8, rx: .6, ry: .4, rz: 0.8, spd: .0012, dr: .0005, t: 1.1 },
+      { r: 9, tube: .045, x: 2, y: -4, z: -12, rx: .9, ry: .2, rz: 1.4, spd: .0006, dr: .0002, t: 2.3 },
+      { r: 4, tube: .06, x: -3, y: 5, z: -6, rx: .2, ry: .7, rz: 2.1, spd: .001, dr: .0004, t: .7 },
+      { r: 12, tube: .04, x: 0, y: 0, z: -16, rx: 1.2, ry: .5, rz: 0.5, spd: .0004, dr: .0001, t: 3.1 },
+      { r: 3, tube: .07, x: 8, y: -3, z: -4, rx: .4, ry: .9, rz: 1.0, spd: .0015, dr: .0006, t: 1.8 },
+      { r: 6, tube: .05, x: -8, y: 3, z: -10, rx: .7, ry: .3, rz: 1.7, spd: .0009, dr: .0003, t: .4 },
     ];
     const rings = RING_DATA.map((d, i) => {
-      const mat = new THREE.MeshBasicMaterial({ color: 0xC4956A, transparent: true, opacity: .12 + (i / RING_DATA.length) * .28 });
-      const mesh = new THREE.Mesh(new THREE.TorusGeometry(d.r, d.tube, 8, 80), mat);
+      const mat = new THREE.MeshBasicMaterial({
+        color: 0xC4956A, transparent: true, opacity: .12 + (i / RING_DATA.length) * .28,
+        depthTest: false, depthWrite: false
+      });
+      const mesh = new THREE.Mesh(new THREE.TorusGeometry(d.r, d.tube, 16, 120), mat);
       mesh.position.set(d.x, d.y, d.z);
-      mesh.rotation.set(d.rx, d.ry, 0);
+      mesh.rotation.set(d.rx, d.ry, d.rz);
       scene.add(mesh);
       return { ...d, mesh, ox: d.x, oy: d.y };
     });
@@ -1335,42 +1336,54 @@
     const beans = [];
     for (let i = 0; i < 7; i++) {
       const group = new THREE.Group();
-
-      // Bean body — small flattened sphere
       const bodyMat = new THREE.MeshBasicMaterial({ color: 0xB87040, transparent: true, opacity: 0.85 });
       const body = new THREE.Mesh(new THREE.SphereGeometry(0.38, 12, 8), bodyMat);
       body.scale.set(1, 0.58, 0.44);
       group.add(body);
-
-      // Glow halo — larger transparent sphere behind
       const glowMat = new THREE.MeshBasicMaterial({ color: 0xC4956A, transparent: true, opacity: 0.12, side: THREE.BackSide });
       const glow = new THREE.Mesh(new THREE.SphereGeometry(0.72, 12, 8), glowMat);
       glow.scale.set(1, 0.58, 0.44);
       group.add(glow);
-
-      group.position.set(
-        (Math.random() - 0.5) * 24,
-        (Math.random() - 0.5) * 12,
-        (Math.random() - 0.5) * 8
-      );
-      group.rotation.set(
-        Math.random() * Math.PI * 2,
-        Math.random() * Math.PI * 2,
-        Math.random() * Math.PI * 2
-      );
+      group.position.set((Math.random() - .5) * 24, (Math.random() - .5) * 12, (Math.random() - .5) * 8);
+      group.rotation.set(Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2);
       group.userData = {
-        rx: (Math.random() - 0.5) * 0.01,
-        ry: (Math.random() - 0.5) * 0.014,
-        rz: (Math.random() - 0.5) * 0.006,
+        rx: (Math.random() - .5) * .01,
+        ry: (Math.random() - .5) * .014,
+        rz: (Math.random() - .5) * .006,
         oy: group.position.y,
-        fs: 0.25 + Math.random() * 0.35,
-        fa: 0.12 + Math.random() * 0.2,
-        fo: i * 0.7
+        fs: .25 + Math.random() * .35,
+        fa: .12 + Math.random() * .2,
+        fo: i * .7,
+        opacity: 0.4 + Math.random() * 0.6,
+        opacityDir: Math.random() > .5 ? 1 : -1,
+        opacitySpeed: 0.002 + Math.random() * 0.003,
+        opacityPause: Math.random() * 40 | 0
       };
       scene.add(group);
       beans.push(group);
     }
 
+    // ── NAV CUP STEAM ────────────────────────────────────
+    function getNavCupWorld() {
+      const el = document.querySelector('.nav-cup-wrap');
+      if (!el) return { x: -12, y: 8.5 };
+      const rect = el.getBoundingClientRect();
+      const fov = camera.fov * Math.PI / 180;
+      const h2 = Math.tan(fov / 2) * camera.position.z;
+      const w2 = h2 * camera.aspect;
+      return {
+        x: ((rect.left + rect.width / 2) / window.innerWidth * 2 - 1) * w2 + camera.position.x,
+        y: -((rect.top + rect.height / 2) / window.innerHeight * 2 - 1) * h2 + camera.position.y
+      };
+    }
+    const navSteam = [];
+    for (let i = 0; i < 18; i++) {
+      const mat = new THREE.MeshBasicMaterial({ color: 0xC4956A, transparent: true, opacity: 0 });
+      const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.055, 6, 4), mat);
+      mesh.userData = { life: Math.random(), speed: 0.004 + Math.random() * 0.004, spawnX: 0, spawnY: 0, laneX: (Math.random() - .5) * .18, wavePhase: Math.random() * Math.PI * 2, waveAmp: 0.04 + Math.random() * .06, waveFreq: 1.2 + Math.random() * .8, riseHeight: 1.0 + Math.random() * .8, dispX: 0, dispY: 0 };
+      scene.add(mesh);
+      navSteam.push(mesh);
+    }
 
     // ── THEME UPDATE ─────────────────────────────────────
     function updateScene() {
@@ -1381,22 +1394,16 @@
       pMat.color.copy(rc);
       sg.children.forEach(t => t.material.color.copy(rc));
       glowMat1.color.copy(rc); glowMat2.color.copy(rc);
-      glowMat1.opacity = dark ? .045 : .025;
-      glowMat2.opacity = dark ? .028 : .015;
+      glowMat1.opacity = dark ? .045 : .025; glowMat2.opacity = dark ? .028 : .015;
       const bBodyCol = new THREE.Color(dark ? 0xB87040 : 0x7A3E18);
       const bGlowCol = new THREE.Color(dark ? 0xC4956A : 0x9B5A28);
-      beans.forEach(g => {
-        g.children[0].material.color.copy(bBodyCol);
-        g.children[1].material.color.copy(bGlowCol);
-      });
+      beans.forEach(g => { g.children[0].material.color.copy(bBodyCol); g.children[1].material.color.copy(bGlowCol); });
+      navSteam.forEach(p => p.material.color.set(dark ? 0xC4956A : 0x8B5E3C));
     }
 
     // ── MOUSE / SCROLL ───────────────────────────────────
     let tX = 0, tY = 0, cX = 0, cY = 0, scrollY = 0;
-    document.addEventListener('mousemove', e => {
-      tX = (e.clientX / window.innerWidth - .5) * 5;
-      tY = -(e.clientY / window.innerHeight - .5) * 3;
-    });
+    document.addEventListener('mousemove', e => { tX = (e.clientX / window.innerWidth - .5) * 5; tY = -(e.clientY / window.innerHeight - .5) * 3; });
     window.addEventListener('scroll', () => { scrollY = window.scrollY; });
 
     // ── ANIMATE ──────────────────────────────────────────
@@ -1404,11 +1411,9 @@
     function animate() {
       requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
-
       cX += (tX - cX) * .04; cY += (tY - cY) * .04;
-      camera.position.x = cX * .8;
-      camera.position.y = cY * .5 - scrollY * .003;
-      camera.lookAt(0, -scrollY * .003, 0);
+      camera.position.x = cX * .8; camera.position.y = cY * .5;
+      camera.lookAt(0, 0, 0);
 
       rings.forEach((r, i) => {
         r.mesh.rotation.x += r.spd * (1 + Math.sin(t * .3 + i) * .3);
@@ -1418,7 +1423,6 @@
         r.mesh.position.x = r.ox + Math.cos(t * .3 + r.t) * .3 + cX * (.05 + i * .01);
       });
 
-      // Mouse repel particles
       const pa = pGeo.attributes.position.array;
       for (let i = 0; i < PC; i++) {
         const ix = i * 3, iy = i * 3 + 1;
@@ -1430,15 +1434,48 @@
       pGeo.attributes.position.needsUpdate = true;
       pMat.opacity = .24 + Math.sin(t * .5) * .04;
 
-      // Beans
+      // Beans with fade
       beans.forEach(b => {
-        b.rotation.x += b.userData.rx;
-        b.rotation.y += b.userData.ry;
-        b.rotation.z += b.userData.rz;
-        b.position.y = b.userData.oy + Math.sin(t * b.userData.fs + b.userData.fo) * b.userData.fa;
+        const ud = b.userData;
+        b.rotation.x += ud.rx; b.rotation.y += ud.ry; b.rotation.z += ud.rz;
+        b.position.y = ud.oy + Math.sin(t * ud.fs + ud.fo) * ud.fa;
+        if (ud.opacityPause > 0) {
+          ud.opacityPause--;
+        } else {
+          ud.opacity += ud.opacityDir * ud.opacitySpeed;
+          if (ud.opacity >= 1) { ud.opacity = 1; ud.opacityDir = -1; ud.opacityPause = 60 + Math.random() * 180 | 0; }
+          else if (ud.opacity <= 0) { ud.opacity = 0; ud.opacityDir = 1; ud.opacityPause = 40 + Math.random() * 120 | 0; }
+        }
+        b.children[0].material.opacity = ud.opacity * 0.85;
+        b.children[1].material.opacity = ud.opacity * 0.12;
       });
 
-      // Steam
+      // Nav cup steam
+      const cup = getNavCupWorld();
+      navSteam.forEach(p => {
+        const ud = p.userData;
+        ud.life += ud.speed;
+        if (ud.life >= 1) {
+          ud.life = 0;
+          ud.spawnX = cup.x + ud.laneX; ud.spawnY = cup.y + 0.18;
+          ud.dispX = 0; ud.dispY = 0;
+          p.position.set(ud.spawnX, ud.spawnY, 0.5);
+        }
+        const rise = ud.life * ud.riseHeight;
+        const wave = Math.sin(t * ud.waveFreq + ud.wavePhase) * ud.waveAmp * ud.life;
+        const px = ud.spawnX + wave + ud.dispX;
+        const py = ud.spawnY + rise + ud.dispY;
+        const dx = px - cX * 0.8, dy = py - cY * 0.5;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 1.2 && d > 0) { const force = (1.2 - d) / 1.2 * 0.012; ud.dispX += (dx / d) * force; ud.dispY += (dy / d) * force * 0.4; }
+        ud.dispX *= 0.96; ud.dispY *= 0.96;
+        p.position.x = px; p.position.y = py;
+        const fade = ud.life < 0.2 ? ud.life / 0.2 : ud.life > 0.6 ? 1 - (ud.life - 0.6) / 0.4 : 1;
+        p.material.opacity = fade * 0.38;
+        const s = 0.5 + ud.life * 0.8; p.scale.setScalar(s);
+      });
+
+      // Steam tubes
       sg.children.forEach(tube => {
         tube.material.opacity = .02 + Math.abs(Math.sin(t * tube.userData.spd * 600 + tube.userData.off)) * .06;
         tube.position.y = Math.sin(t * tube.userData.spd * 600 + tube.userData.off) * .3;
@@ -1451,7 +1488,6 @@
       renderer.render(scene, camera);
     }
     updateScene();
-    animate();
     animate();
 
     window.addEventListener('resize', () => {
@@ -1472,7 +1508,6 @@
       .fromTo('#heroBio', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: 'power2.out' }, .4)
       .fromTo('#heroTags', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .5, ease: 'power2.out' }, .52)
       .fromTo('#heroPhoto', { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: .8, ease: 'power2.out' }, .3);
-
     ['#proj0', '#proj1', '#proj2', '#proj3'].filter(id => document.querySelector(id)).forEach((id, i) => {
       gsap.fromTo(id, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .6, ease: 'power2.out', delay: i * .1, scrollTrigger: { trigger: id, start: 'top 85%' } });
     });
