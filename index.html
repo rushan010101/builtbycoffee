@@ -267,6 +267,7 @@
       }
     }
 
+
     .ticker-wrap {
       overflow: hidden;
       border-top: 1px solid var(--border);
@@ -1327,11 +1328,11 @@
     // ── GLOW BLOBS ───────────────────────────────────────
     const glowBlobs = [];
     const blobDefs = [
-      { r: 14, x: 10, y: -4, z: -18 },
-      { r: 10, x: -8, y: 6, z: -14 },
+      { r: 14, x: 10, y: -4, z: -20 },
+      { r: 10, x: -8, y: 6, z: -12 },
     ];
     blobDefs.forEach((d, i) => {
-      const mat = new THREE.MeshBasicMaterial({ color: 0xC4956A, transparent: true, opacity: 0, side: THREE.DoubleSide });
+      const mat = new THREE.MeshBasicMaterial({ color: 0xC4956A, transparent: true, opacity: 0, side: THREE.DoubleSide, depthTest: false, depthWrite: false });
       const mesh = new THREE.Mesh(new THREE.CircleGeometry(d.r, 32), mat);
       mesh.position.set(d.x, d.y, d.z);
       scene.add(mesh);
@@ -1343,9 +1344,9 @@
         opacityPause: Math.random() * 100 | 0,
         // spawn positions pool — teleport to a new spot when invisible
         positions: [
-          new THREE.Vector3(10, -4, -18), new THREE.Vector3(-8, 6, -14),
-          new THREE.Vector3(6, 8, -16), new THREE.Vector3(-10, -6, -15),
-          new THREE.Vector3(0, 5, -20), new THREE.Vector3(8, -8, -12),
+          new THREE.Vector3(10, -4, -20), new THREE.Vector3(-8, 6, -20),
+          new THREE.Vector3(6, 8, -20), new THREE.Vector3(-10, -6, -20),
+          new THREE.Vector3(0, 5, -20), new THREE.Vector3(8, -8, -20),
         ],
         posIdx: i
       });
@@ -1422,7 +1423,7 @@
     }
 
     // ── MOUSE / SCROLL ───────────────────────────────────
-    let tX = 0, tY = 0, cX = 0, cY = 0, scrollY = 0;
+    let tX = 0, tY = 0, cX = 0, cY = 0;
     document.addEventListener('mousemove', e => { tX = (e.clientX / window.innerWidth - .5) * 5; tY = -(e.clientY / window.innerHeight - .5) * 3; });
     // scroll removed — causes zoom on mobile
 
@@ -1433,7 +1434,7 @@
       const t = clock.getElapsedTime();
       cX += (tX - cX) * .04; cY += (tY - cY) * .04;
       camera.position.x = cX * .8; camera.position.y = cY * .5;
-      camera.lookAt(0, 0, 0);
+      camera.lookAt(cX * .8, cY * .5, 0);
 
       rings.forEach((r, i) => {
         r.mesh.rotation.x += r.spd * (1 + Math.sin(t * .3 + i) * .3);
@@ -1485,9 +1486,9 @@
         const wave = Math.sin(t * ud.waveFreq + ud.wavePhase) * ud.waveAmp * ud.life;
         const px = ud.spawnX + wave + ud.dispX;
         const py = ud.spawnY + rise + ud.dispY;
-        const dx = px - cX * 0.8, dy = py - cY * 0.5;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        if (d < 1.2 && d > 0) { const force = (1.2 - d) / 1.2 * 0.012; ud.dispX += (dx / d) * force; ud.dispY += (dy / d) * force * 0.4; }
+        const sdx = px - cX * 0.8, sdy = py - cY * 0.5;
+        const sd = Math.sqrt(sdx * sdx + sdy * sdy);
+        if (sd < 1.2 && sd > 0) { const force = (1.2 - sd) / 1.2 * 0.012; ud.dispX += (sdx / sd) * force; ud.dispY += (sdy / sd) * force * 0.4; }
         ud.dispX *= 0.96; ud.dispY *= 0.96;
         p.position.x = px; p.position.y = py;
         const fade = ud.life < 0.2 ? ud.life / 0.2 : ud.life > 0.6 ? 1 - (ud.life - 0.6) / 0.4 : 1;
