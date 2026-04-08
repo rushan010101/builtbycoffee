@@ -1179,6 +1179,8 @@
               about.</p>
             <p><strong>Built by Coffee</strong> is my one-man studio. SaaS, web3, games — whatever the idea demands. I
               do it all: design, code, ship, repeat.</p>
+            <p>And then there's <strong>The Game</strong> — my life's project. Been sitting with this one for years.
+              It's about people. That's all I'll say for now.</p>
             <p><span class="material-icons-outlined"
                 style="font-size:14px;vertical-align:middle;color:var(--accent);margin-right:4px">favorite</span>I spent
               6 years living in <strong>Shenzhen and Hong Kong</strong> — an experience that rewired how I see the
@@ -1533,14 +1535,14 @@
     updateScene();
     animate();
 
-    // Lock initial height to prevent mobile browser toolbar showing/hiding causing zoom
-    const initialHeight = window.innerHeight;
+    // On mobile, never resize — toolbar show/hide fires resize and causes zoom
+    // Only resize on desktop (pointer device available)
+    const canResize = window.matchMedia('(pointer: fine)').matches;
     window.addEventListener('resize', () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight > initialHeight * 1.1 ? window.innerHeight : initialHeight;
-      camera.aspect = w / h;
+      if (!canResize) return;
+      camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
+      renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
     document.getElementById('themeIcon').textContent = isDark ? '☀' : '☽';
