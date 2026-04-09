@@ -24,14 +24,11 @@
     })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
   <link
     href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Geist:wght@300;400;500&display=swap"
     rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined&display=swap" rel="stylesheet">
   <style>
     *,
     *::before,
@@ -51,7 +48,7 @@
       --bg-card: rgba(44, 61, 74, 0.55);
       --text-1: #F0EDE8;
       --text-2: rgba(240, 237, 232, 0.68);
-      --text-3: rgba(240, 237, 232, 0.45);
+      --text-3: rgba(240, 237, 232, 0.62);
       --accent: #C4956A;
       --border: rgba(196, 149, 106, 0.18);
       --cup-fill: #C4956A;
@@ -1077,7 +1074,7 @@
               <circle cx="120" cy="120" r="100" fill="none" stroke="var(--accent)" stroke-width="0.5" opacity="0.1" />
             </svg>
             <div class="hero-photo">
-              <img src="/photo1.webp" alt="Rushan Engalychev"
+              <img src="/photo1.webp" alt="Rushan Engalychev" fetchpriority="high" width="200" height="260"
                 style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" />
             </div>
           </div>
@@ -1247,6 +1244,9 @@
     </footer>
   </div>
 
+  <script src="/three.min.js"></script>
+  <script src="/gsap.min.js"></script>
+  <script src="/ScrollTrigger.min.js"></script>
   <script>
     // ── THEME ────────────────────────────────────────────
     let isDark = localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -1312,33 +1312,27 @@
   float blob(vec2 uv, vec2 seed, float radius) {
     if (radius < 0.01) return 0.0;
     vec2 s = vec2(seed.x * uAspect, seed.y);
-    // Warp uv space around seed for irregular shape
     vec2 rel = uv - s;
     float angle = atan(rel.y, rel.x);
     float warp = noise(vec2(angle * 1.2 + seed.x * 4.1, angle * 0.8 + seed.y * 3.7)) * 0.3
                + noise(vec2(angle * 2.5 + seed.y * 2.1, angle * 1.4 + seed.x * 5.2)) * 0.15;
     float d = length(rel) - warp * min(radius, 0.4);
-    // Simple linear falloff — no gaussian peak, no center artifact
     float falloff = 1.0 - clamp(d / (radius * 1.1), 0.0, 1.0);
-    return falloff * falloff; // squared for smoother fade
+    return falloff * falloff;
   }
 
   void main() {
     vec2 uv = vec2(vUv.x * uAspect, vUv.y);
 
-    // Wave 1 (0->0.5): col1 blobs grow into col0 bg -> solid col1
-    // Wave 2 (0.5->1): col0 blobs grow into col1 bg -> solid col0
     float p1 = pow(clamp(uProgress * 2.0, 0.0, 1.0), 1.8);
     float p2 = pow(clamp((uProgress - 0.5) * 2.0, 0.0, 1.0), 1.8);
 
-    // Wave 1 blobs — col1 appearing in col0
     float w1b0 = blob(uv, vec2(0.32, 0.28), max(p1 - 0.00, 0.0) * 2.2);
     float w1b1 = blob(uv, vec2(0.71, 0.42), max(p1 - 0.08, 0.0) * 2.2);
     float w1b2 = blob(uv, vec2(0.22, 0.68), max(p1 - 0.16, 0.0) * 2.2);
     float w1b3 = blob(uv, vec2(0.58, 0.75), max(p1 - 0.24, 0.0) * 2.2);
     float blend1 = clamp(max(max(w1b0, w1b1), max(w1b2, w1b3)), 0.0, 1.0);
 
-    // Wave 2 blobs — col0 appearing in col1 bg
     float w2b0 = blob(uv, vec2(0.50, 0.20), max(p2 - 0.00, 0.0) * 2.2);
     float w2b1 = blob(uv, vec2(0.18, 0.45), max(p2 - 0.08, 0.0) * 2.2);
     float w2b2 = blob(uv, vec2(0.75, 0.62), max(p2 - 0.16, 0.0) * 2.2);
@@ -1348,8 +1342,6 @@
     vec3 col0 = uDark ? vec3(0.078, 0.118, 0.149) : vec3(0.941, 0.929, 0.910);
     vec3 col1 = uDark ? vec3(0.024, 0.055, 0.118) : vec3(0.875, 0.906, 0.941);
 
-    // Wave 1: mix col0->col1 using blob1
-    // Wave 2: mix result->col0 using blob2 (col0 blobs eat into col1 bg)
     vec3 col = mix(col0, col1, blend1);
     col = mix(col, col0, blend2);
 
@@ -1374,10 +1366,9 @@
       })
     );
     bgMesh.renderOrder = -1;
-    bgMesh.visible = false; // disabled for now
+    bgMesh.visible = false;
     scene.add(bgMesh);
 
-    // Store original ring positions for convergence
     // ── RINGS ────────────────────────────────────────────
     const RING_DATA = [
       { r: 7, tube: .06, x: 4, y: 2, z: -5, rx: .3, ry: .1, rz: 0.2, spd: .00018, dr: .00006, t: 0 },
@@ -1440,7 +1431,6 @@
         opacityDir: 1,
         opacitySpeed: 0.0003 + Math.random() * 0.0002,
         opacityPause: Math.floor(Math.random() * 60),
-        // spawn positions pool — teleport to a new spot when invisible
         positions: [
           new THREE.Vector3(10, -4, -20), new THREE.Vector3(-8, 6, -20),
           new THREE.Vector3(6, 8, -20), new THREE.Vector3(-10, -6, -20),
@@ -1485,16 +1475,15 @@
 
 
     // ── SCROLL SCRUB ─────────────────────────────────────
-    let scrollProgress = 0; // 0–1
+    let scrollProgress = 0;
     let targetScrollProgress = 0;
 
-    // Store ring original positions for convergence
     const ringOrigPos = rings.map(r => ({ x: r.ox, y: r.oy }));
 
     window.addEventListener('scroll', () => {
       const maxScroll = document.body.scrollHeight - window.innerHeight;
       const sy = window.scrollY;
-      const deadzone = 250; // px solid at top and bottom
+      const deadzone = 250;
       const activeRange = Math.max(maxScroll - deadzone * 2, 1);
       const activeScroll = Math.max(sy - deadzone, 0);
       targetScrollProgress = Math.min(Math.max(activeScroll / activeRange, 0), 1);
@@ -1538,10 +1527,9 @@
       navSteam.forEach(p => p.material.color.set(dark ? 0xC4956A : 0x8B5E3C));
     }
 
-    // ── MOUSE / SCROLL ───────────────────────────────────
+    // ── MOUSE ────────────────────────────────────────────
     let tX = 0, tY = 0, cX = 0, cY = 0;
     document.addEventListener('mousemove', e => { tX = (e.clientX / window.innerWidth - .5) * 5; tY = -(e.clientY / window.innerHeight - .5) * 3; });
-    // scroll removed — causes zoom on mobile
 
     // ── ANIMATE ──────────────────────────────────────────
     const clock = new THREE.Clock();
@@ -1552,16 +1540,12 @@
       camera.position.x = cX * .8; camera.position.y = cY * .5;
       camera.lookAt(cX * .8, cY * .5, 0);
 
-      // Smooth scroll progress
       scrollProgress += (targetScrollProgress - scrollProgress) * 0.04;
-      // bgUniforms.uProgress.value = scrollProgress; // shader disabled
 
-      // Rings converge toward center as scroll progresses
       rings.forEach((r, i) => {
         r.mesh.rotation.x += r.spd * (1 + Math.sin(t * .1 + i) * .15);
         r.mesh.rotation.y += r.spd * .5;
         r.mesh.rotation.z += r.dr;
-        // Converge: lerp toward 0,0 based on scrollProgress
         const conv = scrollProgress * 0.75;
         r.ox = ringOrigPos[i].x * (1 - conv);
         r.oy = ringOrigPos[i].y * (1 - conv);
@@ -1580,7 +1564,6 @@
       pGeo.attributes.position.needsUpdate = true;
       pMat.opacity = .24 + Math.sin(t * .5) * .04;
 
-      // Beans with fade
       beans.forEach(b => {
         const ud = b.userData;
         b.rotation.x += ud.rx; b.rotation.y += ud.ry; b.rotation.z += ud.rz;
@@ -1596,7 +1579,6 @@
         b.children[1].material.opacity = ud.opacity * 0.12;
       });
 
-      // Nav cup steam
       const cup = getNavCupWorld();
       navSteam.forEach(p => {
         const ud = p.userData;
@@ -1621,7 +1603,6 @@
         const s = 0.5 + ud.life * 0.8; p.scale.setScalar(s);
       });
 
-      // Steam tubes
       sg.children.forEach(tube => {
         tube.material.opacity = .02 + Math.abs(Math.sin(t * tube.userData.spd * 600 + tube.userData.off)) * .06;
         tube.position.y = Math.sin(t * tube.userData.spd * 600 + tube.userData.off) * .3;
@@ -1639,7 +1620,6 @@
             b.opacityPause = 180 + Math.random() * 300 | 0;
           } else if (b.opacity <= 0) {
             b.opacity = 0;
-            // Teleport to a new random position while invisible
             b.posIdx = (b.posIdx + 1 + Math.floor(Math.random() * (b.positions.length - 1))) % b.positions.length;
             const np = b.positions[b.posIdx];
             b.mesh.position.set(np.x, np.y, np.z);
@@ -1656,9 +1636,6 @@
     updateScene();
     animate();
 
-
-    // On mobile, never resize — toolbar show/hide fires resize and causes zoom
-    // Only resize on desktop (pointer device available)
     const canResize = window.matchMedia('(pointer: fine)').matches;
     window.addEventListener('resize', () => {
       if (!canResize) return;
