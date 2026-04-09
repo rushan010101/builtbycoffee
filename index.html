@@ -1279,20 +1279,116 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     const _ih = window.innerHeight;
     renderer.setSize(window.innerWidth, _ih);
-    renderer.setClearColor(0x141E26, 1);
+    renderer.setClearColor(0x000000, 0);
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 28);
 
+
+    // ── BACKGROUND SHADER ────────────────────────────────
+    const bgVert = `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = vec4(position.xy, 1.0, 1.0);
+  }
+`;
+
+    const bgFrag = `
+  precision mediump float;
+  varying vec2 vUv;
+  uniform float uProgress;
+  uniform float uAspect;
+  uniform bool uDark;
+
+  float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+  }
+  float noise(vec2 p) {
+    vec2 i = floor(p); vec2 f = fract(p);
+    f = f*f*(3.0-2.0*f);
+    return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),
+               mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);
+  }
+
+  float blob(vec2 uv, vec2 seed, float radius) {
+    if (radius < 0.01) return 0.0;
+    vec2 s = vec2(seed.x * uAspect, seed.y);
+    // Warp uv space around seed for irregular shape
+    vec2 rel = uv - s;
+    float angle = atan(rel.y, rel.x);
+    float warp = noise(vec2(angle * 1.2 + seed.x * 4.1, angle * 0.8 + seed.y * 3.7)) * 0.3
+               + noise(vec2(angle * 2.5 + seed.y * 2.1, angle * 1.4 + seed.x * 5.2)) * 0.15;
+    float d = length(rel) - warp * min(radius, 0.4);
+    // Simple linear falloff — no gaussian peak, no center artifact
+    float falloff = 1.0 - clamp(d / (radius * 1.1), 0.0, 1.0);
+    return falloff * falloff; // squared for smoother fade
+  }
+
+  void main() {
+    vec2 uv = vec2(vUv.x * uAspect, vUv.y);
+
+    // Wave 1 (0->0.5): col1 blobs grow into col0 bg -> solid col1
+    // Wave 2 (0.5->1): col0 blobs grow into col1 bg -> solid col0
+    float p1 = pow(clamp(uProgress * 2.0, 0.0, 1.0), 1.8);
+    float p2 = pow(clamp((uProgress - 0.5) * 2.0, 0.0, 1.0), 1.8);
+
+    // Wave 1 blobs — col1 appearing in col0
+    float w1b0 = blob(uv, vec2(0.32, 0.28), max(p1 - 0.00, 0.0) * 2.2);
+    float w1b1 = blob(uv, vec2(0.71, 0.42), max(p1 - 0.08, 0.0) * 2.2);
+    float w1b2 = blob(uv, vec2(0.22, 0.68), max(p1 - 0.16, 0.0) * 2.2);
+    float w1b3 = blob(uv, vec2(0.58, 0.75), max(p1 - 0.24, 0.0) * 2.2);
+    float blend1 = clamp(max(max(w1b0, w1b1), max(w1b2, w1b3)), 0.0, 1.0);
+
+    // Wave 2 blobs — col0 appearing in col1 bg
+    float w2b0 = blob(uv, vec2(0.50, 0.20), max(p2 - 0.00, 0.0) * 2.2);
+    float w2b1 = blob(uv, vec2(0.18, 0.45), max(p2 - 0.08, 0.0) * 2.2);
+    float w2b2 = blob(uv, vec2(0.75, 0.62), max(p2 - 0.16, 0.0) * 2.2);
+    float w2b3 = blob(uv, vec2(0.42, 0.82), max(p2 - 0.24, 0.0) * 2.2);
+    float blend2 = clamp(max(max(w2b0, w2b1), max(w2b2, w2b3)), 0.0, 1.0);
+
+    vec3 col0 = uDark ? vec3(0.078, 0.118, 0.149) : vec3(0.941, 0.929, 0.910);
+    vec3 col1 = uDark ? vec3(0.024, 0.055, 0.118) : vec3(0.875, 0.906, 0.941);
+
+    // Wave 1: mix col0->col1 using blob1
+    // Wave 2: mix result->col0 using blob2 (col0 blobs eat into col1 bg)
+    vec3 col = mix(col0, col1, blend1);
+    col = mix(col, col0, blend2);
+
+    gl_FragColor = vec4(col, 1.0);
+  }
+`;
+
+    const bgUniforms = {
+      uProgress: { value: 0.0 },
+      uAspect: { value: window.innerWidth / window.innerHeight },
+      uDark: { value: true }
+    };
+
+    const bgMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(2, 2),
+      new THREE.ShaderMaterial({
+        vertexShader: bgVert,
+        fragmentShader: bgFrag,
+        uniforms: bgUniforms,
+        depthTest: false,
+        depthWrite: false
+      })
+    );
+    bgMesh.renderOrder = -1;
+    bgMesh.visible = false; // disabled for now
+    scene.add(bgMesh);
+
+    // Store original ring positions for convergence
     // ── RINGS ────────────────────────────────────────────
     const RING_DATA = [
-      { r: 7, tube: .06, x: 4, y: 2, z: -5, rx: .3, ry: .1, rz: 0.2, spd: .0008, dr: .0003, t: 0 },
-      { r: 5, tube: .05, x: -6, y: -1, z: -8, rx: .6, ry: .4, rz: 0.8, spd: .0012, dr: .0005, t: 1.1 },
-      { r: 9, tube: .045, x: 2, y: -4, z: -12, rx: .9, ry: .2, rz: 1.4, spd: .0006, dr: .0002, t: 2.3 },
-      { r: 4, tube: .06, x: -3, y: 5, z: -6, rx: .2, ry: .7, rz: 2.1, spd: .001, dr: .0004, t: .7 },
-      { r: 12, tube: .04, x: 0, y: 0, z: -16, rx: 1.2, ry: .5, rz: 0.5, spd: .0004, dr: .0001, t: 3.1 },
-      { r: 3, tube: .07, x: 8, y: -3, z: -4, rx: .4, ry: .9, rz: 1.0, spd: .0015, dr: .0006, t: 1.8 },
-      { r: 6, tube: .05, x: -8, y: 3, z: -10, rx: .7, ry: .3, rz: 1.7, spd: .0009, dr: .0003, t: .4 },
+      { r: 7, tube: .06, x: 4, y: 2, z: -5, rx: .3, ry: .1, rz: 0.2, spd: .00018, dr: .00006, t: 0 },
+      { r: 5, tube: .05, x: -6, y: -1, z: -8, rx: .6, ry: .4, rz: 0.8, spd: .00025, dr: .00010, t: 1.1 },
+      { r: 9, tube: .045, x: 2, y: -4, z: -12, rx: .9, ry: .2, rz: 1.4, spd: .00012, dr: .00004, t: 2.3 },
+      { r: 4, tube: .06, x: -3, y: 5, z: -6, rx: .2, ry: .7, rz: 2.1, spd: .00020, dr: .00008, t: .7 },
+      { r: 12, tube: .04, x: 0, y: 0, z: -16, rx: 1.2, ry: .5, rz: 0.5, spd: .00008, dr: .00002, t: 3.1 },
+      { r: 3, tube: .07, x: 8, y: -3, z: -4, rx: .4, ry: .9, rz: 1.0, spd: .00030, dr: .00012, t: 1.8 },
+      { r: 6, tube: .05, x: -8, y: 3, z: -10, rx: .7, ry: .3, rz: 1.7, spd: .00018, dr: .00006, t: .4 },
     ];
     const rings = RING_DATA.map((d, i) => {
       const mat = new THREE.MeshBasicMaterial({
@@ -1342,10 +1438,10 @@
       scene.add(mesh);
       glowBlobs.push({
         mesh, mat,
-        opacity: 0.2 + Math.random() * 0.2,
+        opacity: 0.0,
         opacityDir: 1,
-        opacitySpeed: 0.0004 + Math.random() * 0.0003,
-        opacityPause: Math.random() * 100 | 0,
+        opacitySpeed: 0.0003 + Math.random() * 0.0002,
+        opacityPause: Math.floor(Math.random() * 60),
         // spawn positions pool — teleport to a new spot when invisible
         positions: [
           new THREE.Vector3(10, -4, -20), new THREE.Vector3(-8, 6, -20),
@@ -1373,21 +1469,38 @@
       group.position.set((Math.random() - .5) * 24, (Math.random() - .5) * 12, (Math.random() - .5) * 8);
       group.rotation.set(Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2);
       group.userData = {
-        rx: (Math.random() - .5) * .01,
-        ry: (Math.random() - .5) * .014,
-        rz: (Math.random() - .5) * .006,
+        rx: (Math.random() - .5) * .003,
+        ry: (Math.random() - .5) * .004,
+        rz: (Math.random() - .5) * .002,
         oy: group.position.y,
-        fs: .25 + Math.random() * .35,
-        fa: .12 + Math.random() * .2,
+        fs: .08 + Math.random() * .12,
+        fa: .06 + Math.random() * .1,
         fo: i * .7,
         opacity: 0.4 + Math.random() * 0.6,
         opacityDir: Math.random() > .5 ? 1 : -1,
-        opacitySpeed: 0.002 + Math.random() * 0.003,
+        opacitySpeed: 0.0005 + Math.random() * 0.0008,
         opacityPause: Math.random() * 40 | 0
       };
       scene.add(group);
       beans.push(group);
     }
+
+
+    // ── SCROLL SCRUB ─────────────────────────────────────
+    let scrollProgress = 0; // 0–1
+    let targetScrollProgress = 0;
+
+    // Store ring original positions for convergence
+    const ringOrigPos = rings.map(r => ({ x: r.ox, y: r.oy }));
+
+    window.addEventListener('scroll', () => {
+      const maxScroll = document.body.scrollHeight - window.innerHeight;
+      const sy = window.scrollY;
+      const deadzone = 250; // px solid at top and bottom
+      const activeRange = Math.max(maxScroll - deadzone * 2, 1);
+      const activeScroll = Math.max(sy - deadzone, 0);
+      targetScrollProgress = Math.min(Math.max(activeScroll / activeRange, 0), 1);
+    }, { passive: true });
 
     // ── NAV CUP STEAM ────────────────────────────────────
     function getNavCupWorld() {
@@ -1415,6 +1528,7 @@
     function updateScene() {
       const dark = document.documentElement.getAttribute('data-theme') === 'dark';
       renderer.setClearColor(dark ? 0x141E26 : 0xF0EDE8, 1);
+      bgUniforms.uDark.value = dark;
       const rc = new THREE.Color(dark ? 0xC4956A : 0x7A4A28);
       rings.forEach(r => r.mesh.material.color.copy(rc));
       pMat.color.copy(rc);
@@ -1440,12 +1554,21 @@
       camera.position.x = cX * .8; camera.position.y = cY * .5;
       camera.lookAt(cX * .8, cY * .5, 0);
 
+      // Smooth scroll progress
+      scrollProgress += (targetScrollProgress - scrollProgress) * 0.04;
+      // bgUniforms.uProgress.value = scrollProgress; // shader disabled
+
+      // Rings converge toward center as scroll progresses
       rings.forEach((r, i) => {
-        r.mesh.rotation.x += r.spd * (1 + Math.sin(t * .3 + i) * .3);
-        r.mesh.rotation.y += r.spd * .7;
+        r.mesh.rotation.x += r.spd * (1 + Math.sin(t * .1 + i) * .15);
+        r.mesh.rotation.y += r.spd * .5;
         r.mesh.rotation.z += r.dr;
-        r.mesh.position.y = r.oy + Math.sin(t * .4 + r.t) * .4 + cY * (.03 + i * .008);
-        r.mesh.position.x = r.ox + Math.cos(t * .3 + r.t) * .3 + cX * (.05 + i * .01);
+        // Converge: lerp toward 0,0 based on scrollProgress
+        const conv = scrollProgress * 0.75;
+        r.ox = ringOrigPos[i].x * (1 - conv);
+        r.oy = ringOrigPos[i].y * (1 - conv);
+        r.mesh.position.y = r.oy + Math.sin(t * .12 + r.t) * .25 + cY * (.02 + i * .004);
+        r.mesh.position.x = r.ox + Math.cos(t * .1 + r.t) * .2 + cX * (.03 + i * .006);
       });
 
       const pa = pGeo.attributes.position.array;
@@ -1535,6 +1658,7 @@
     updateScene();
     animate();
 
+
     // On mobile, never resize — toolbar show/hide fires resize and causes zoom
     // Only resize on desktop (pointer device available)
     const canResize = window.matchMedia('(pointer: fine)').matches;
@@ -1543,6 +1667,7 @@
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
+      bgUniforms.uAspect.value = window.innerWidth / window.innerHeight;
     });
 
     document.getElementById('themeIcon').textContent = isDark ? '☀' : '☽';
