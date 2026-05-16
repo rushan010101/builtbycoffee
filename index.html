@@ -1031,7 +1031,7 @@
             <a href="#projects" class="nav-link">Projects</a>
             <a href="#about" class="nav-link">About</a>
             <a href="#contact" class="nav-link">Contact</a>
-            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" data-umami-event="theme_toggle">
               <span id="themeIcon">☀</span><span id="themeLabel">Light</span>
             </button>
           </div>
@@ -1115,7 +1115,7 @@
       <div class="container">
         <div class="section-label">Projects</div>
         <div class="projects-grid">
-          <a href="https://regelradar.de" target="_blank" rel="noopener" class="project-card featured" id="proj0">
+          <a href="https://regelradar.de" target="_blank" rel="noopener" class="project-card featured" id="proj0" data-umami-event="project_click" data-umami-event-project="RegelRadar">
             <div class="project-card-top">
               <div class="project-icon"><span class="material-icons-outlined">radar</span></div>
               <span class="project-status live">Live</span>
@@ -1187,7 +1187,7 @@
             <p>Passionate about <strong>filming</strong> and a good challenge — both are converging into another project
               I'll be throwing myself into very soon.</p>
             <p>I'm always open to <strong>collaborations</strong> — whether it's building something together, a wild
-              idea, or just a good conversation. <a href="mailto:contact@builtbycoffee.com">Drop me a line.</a></p>
+              idea, or just a good conversation. <a href="mailto:contact@builtbycoffee.com" data-umami-event="contact_email_click">Drop me a line.</a></p>
           </div>
           <div class="about-details" id="aboutDetails">
             <div class="about-detail"><span class="about-detail-label">Location</span><span
@@ -1231,7 +1231,7 @@
             <h2>Let's build something.</h2>
             <p>Questions, collaborations, or just want to say hi.</p>
           </div>
-          <a href="mailto:contact@builtbycoffee.com" class="contact-link">contact@builtbycoffee.com →</a>
+          <a href="mailto:contact@builtbycoffee.com" class="contact-link" data-umami-event="contact_email_click">contact@builtbycoffee.com →</a>
         </div>
       </div>
     </section>
